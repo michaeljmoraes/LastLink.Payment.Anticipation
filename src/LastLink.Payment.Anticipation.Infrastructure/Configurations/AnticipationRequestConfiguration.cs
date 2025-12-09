@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace LastLink.Payments.Anticipation.Infrastructure.Configurations
+namespace LastLink.Payment.Anticipation.Infrastructure.Configurations
 {
     /// <summary>
     /// EF Core configuration for the AnticipationRequest aggregate.

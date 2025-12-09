@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>LastLink.Payment.Anticipation.Api</name>
+    </assembly>
+    <members>
+        <member name="T:LastLink.Payment.Anticipation.Api.Controllers.V1.AnticipationController">
+            <summary>
+            Exposes REST endpoints for managing anticipation requests.
+            This controller serves as the application’s external entry point,
+            delegating all business workflows to the Application Layer.
+            </summary>
+        </member>
+        <member name="M:LastLink.Payment.Anticipation.Api.Controllers.V1.AnticipationController.Create(LastLink.Payment.Anticipation.Application.DTOs.CreateAnticipationRequestDto)">
+             <summary>
+             Creates a new anticipation request for a content creator.
+             </summary>
+             <remarks>
+             This operation registers a new anticipation request, applying all
+             domain-driven business rules before persistence.
+            
+             **Business rules enforced:**
+             - The creator may have **only one pending** anticipation request.
+             - Minimum allowed amount is **R$ 100,00**.
+             - A standard fee of 5% is automatically applied.
+            
+             **Example Request Payload:**
+             json
+             {
+               "creatorId": "d9bd3083-03df-4e9a-a65c-5b1fbf0f681e",
+               "grossAmount": 150,
+               "createdAt": "2025-12-06T22:21:48.376Z"
+             }
+             
+            
+             Returns: the complete anticipation record wrapped in a standard API envelope.
+             </remarks>
+        </member>
+        <member name="M:LastLink.Payment.Anticipation.Api.Controllers.V1.AnticipationController.GetByCreator(System.Guid)">
+             <summary>
+             Retrieves all anticipation requests associated with a specific creator.
+             </summary>
+             <remarks>
+             Provides a historical list of all anticipation attempts submitted by a creator.
+             This includes:
+            
+             - Pending requests  
+             - Approved requests  
+             - Rejected requests  
+            
+             Results are returned in descending order of creation date.
+            
+             **Example usage:**
+             GET /api/v1/anticipations?creatorId=3fa85f64-5717-4562-b3fc-2c963f66afa6
+             </remarks>
+        </member>
+        <member name="M:LastLink.Payment.Anticipation.Api.Controllers.V1.AnticipationController.UpdateStatus(System.Guid,LastLink.Payment.Anticipation.Application.DTOs.ApproveRejectDto)">
+             <summary>
+             Updates the status of an anticipation request (approve or reject).
+             </summary>
+             <remarks>
+             The allowed transitions are:
+            
+             - PENDING → APPROVED  
+             - PENDING → REJECTED  
+            
+             The domain layer enforces:
+             - Only pending requests may be updated  
+             - A decision timestamp is automatically recorded  
+            
+             **Example Payload:**
+             json
+             { "status": 1 } // Approved
+             
+            
+             Returns the updated anticipation record in a standard API response envelope.
+             </remarks>
+        </member>
+        <member name="M:LastLink.Payment.Anticipation.Api.Controllers.V1.AnticipationController.Simulate(System.Decimal)">
+             <summary>
+             Simulates the anticipation fee and net value calculation.
+             </summary>
+             <remarks>
+             This endpoint performs a pure domain calculation without persisting data.
+             Ideal for UI preview scenarios.
+            
+             Returns:
+             - Gross amount  
+             - Calculated fee  
+             - Net amount  
+             - Simulation timestamp  
+            
+             **Example usage:**
+             GET /api/v1/anticipations/simulate?grossAmount=200
+             </remarks>
+        </member>
+        <member name="M:LastLink.Payment.Anticipation.Api.Controllers.V1.AnticipationController.Cleanup(System.Guid)">
+            <summary>
+            Deletes all anticipation requests for a given creator.
+            </summary>
+            <remarks>
+            This operation is strictly intended for **automated E2E test cleanup**
+            and should not be used in production workflows.
+            </remarks>
+        </member>
+        <member name="T:LastLink.Payment.Anticipation.Api.Filters.ApiExceptionFilter">
+             <summary>
+             Global exception filter responsible for translating thrown exceptions
+             into a standardized API response format.
+            
+             This filter ensures that:
+             • DomainException → HTTP 400 (Business rule violation)
+             • Any other exception → HTTP 500 (Unexpected internal error)
+            
+             All responses follow the unified ApiResponse envelope to guarantee
+             predictable behavior for client applications and automated tests.
+             </summary>
+        </member>
+        <member name="M:LastLink.Payment.Anticipation.Api.Filters.ApiExceptionFilter.OnException(Microsoft.AspNetCore.Mvc.Filters.ExceptionContext)">
+             <summary>
+             Captures exceptions thrown during request execution and transforms
+             them into structured HTTP responses.
+            
+             The filter does not rethrow exceptions and fully handles the response,
+             ensuring a consistent error-handling strategy across all controllers.
+             </summary>
+             <param name="context">The context containing exception and request details.</param>
+        </member>
+        <member name="T:LastLink.Payment.Anticipation.Api.Models.ApiResponse`1">
+             <summary>
+             Represents a standardized API response envelope used across the entire
+             Anticipation API. Ensures consistent structure for both success and
+             error flows, simplifying client-side handling and automated E2E testing.
+            
+             The response model enforces:
+             • Predictable shape for all endpoints  
+             • Separation of success data vs. error messaging  
+             • Strong typing for the returned payload  
+            
+             This envelope is used by controllers and filters to unify the external API contract.
+             </summary>
+             <typeparam name="T">Type of the data returned in successful responses.</typeparam>
+        </member>
+        <member name="P:LastLink.Payment.Anticipation.Api.Models.ApiResponse`1.Success">
+            <summary>
+            Indicates whether the request was processed successfully.
+            </summary>
+        </member>
+        <member name="P:LastLink.Payment.Anticipation.Api.Models.ApiResponse`1.Data">
+            <summary>
+            Response payload returned in case of a successful operation.
+            When <see cref="P:LastLink.Payment.Anticipation.Api.Models.ApiResponse`1.Success"/> is false, this value will be null.
+            </summary>
+        </member>
+        <member name="P:LastLink.Payment.Anticipation.Api.Models.ApiResponse`1.Error">
+            <summary>
+            Error message returned when <see cref="P:LastLink.Payment.Anticipation.Api.Models.ApiResponse`1.Success"/> is false.
+            Represents business rule violations or unexpected system errors.
+            </summary>
+        </member>
+        <member name="M:LastLink.Payment.Anticipation.Api.Models.ApiResponse`1.Ok(`0)">
+            <summary>
+            Creates a successful API response wrapping the given payload.
+            </summary>
+        </member>
+        <member name="M:LastLink.Payment.Anticipation.Api.Models.ApiResponse`1.Fail(System.String)">
+            <summary>
+            Creates a failed API response encapsulating the error description.
+            </summary>
+        </member>
+    </members>
+</doc>

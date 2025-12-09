@@ -98,7 +98,7 @@ namespace LastLink.Payment.Anticipation.Application.Services
         /// </summary>
         public Task<AnticipationResponseDto> SimulateAsync(decimal grossAmount)
         {
-            var simulated = AnticipationRequest.Create(Guid.Empty, grossAmount, DateTime.UtcNow);
+            var simulated = AnticipationRequest.Create(Guid.NewGuid(), grossAmount, DateTime.UtcNow);
             return Task.FromResult(ToResponse(simulated));
         }
 

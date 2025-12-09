@@ -1,4 +1,4 @@
-﻿namespace LastLink.Payments.Anticipation.Api.Models
+﻿namespace LastLink.Payment.Anticipation.Api.Models
 {
     /// <summary>
     /// Represents a standardized API response envelope used across the entire

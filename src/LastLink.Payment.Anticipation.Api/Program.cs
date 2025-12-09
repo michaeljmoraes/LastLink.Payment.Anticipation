@@ -1,6 +1,6 @@
-using LastLink.Payments.Anticipation.Api.Filters;
-using LastLink.Payments.Anticipation.Infrastructure;
-using LastLink.Payments.Anticipation.Infrastructure.Context;
+using LastLink.Payment.Anticipation.Api.Filters;
+using LastLink.Payment.Anticipation.Infrastructure;
+using LastLink.Payment.Anticipation.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);

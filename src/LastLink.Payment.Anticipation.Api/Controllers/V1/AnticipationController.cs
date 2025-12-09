@@ -1,10 +1,10 @@
 ﻿using LastLink.Payment.Anticipation.Application.DTOs;
 using LastLink.Payment.Anticipation.Application.Interfaces;
 using LastLink.Payment.Anticipation.Domain.Enums;
-using LastLink.Payments.Anticipation.Api.Models;
+using LastLink.Payment.Anticipation.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LastLink.Payments.Anticipation.Api.Controllers.V1
+namespace LastLink.Payment.Anticipation.Api.Controllers.V1
 {
     /// <summary>
     /// Exposes REST endpoints for managing anticipation requests.
@@ -37,13 +37,13 @@ namespace LastLink.Payments.Anticipation.Api.Controllers.V1
         /// - A standard fee of 5% is automatically applied.
         ///
         /// **Example Request Payload:**
-        /// ```json
+        /// json
         /// {
         ///   "creatorId": "d9bd3083-03df-4e9a-a65c-5b1fbf0f681e",
         ///   "grossAmount": 150,
         ///   "createdAt": "2025-12-06T22:21:48.376Z"
         /// }
-        /// ```
+        /// 
         ///
         /// Returns: the complete anticipation record wrapped in a standard API envelope.
         /// </remarks>
@@ -70,7 +70,7 @@ namespace LastLink.Payments.Anticipation.Api.Controllers.V1
         /// Results are returned in descending order of creation date.
         ///
         /// **Example usage:**
-        /// `GET /api/v1/anticipations?creatorId=3fa85f64-5717-4562-b3fc-2c963f66afa6`
+        /// GET /api/v1/anticipations?creatorId=3fa85f64-5717-4562-b3fc-2c963f66afa6
         /// </remarks>
         [HttpGet]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
@@ -94,9 +94,9 @@ namespace LastLink.Payments.Anticipation.Api.Controllers.V1
         /// - A decision timestamp is automatically recorded  
         ///
         /// **Example Payload:**
-        /// ```json
+        /// json
         /// { "status": 1 } // Approved
-        /// ```
+        /// 
         ///
         /// Returns the updated anticipation record in a standard API response envelope.
         /// </remarks>
@@ -124,7 +124,7 @@ namespace LastLink.Payments.Anticipation.Api.Controllers.V1
         /// - Simulation timestamp  
         ///
         /// **Example usage:**
-        /// `GET /api/v1/anticipations/simulate?grossAmount=200`
+        /// GET /api/v1/anticipations/simulate?grossAmount=200
         /// </remarks>
         [HttpGet("simulate")]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]

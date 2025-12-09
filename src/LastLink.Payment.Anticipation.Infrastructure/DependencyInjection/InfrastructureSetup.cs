@@ -1,10 +1,12 @@
-﻿using LastLink.Payment.Anticipation.Domain.Repositories;
-using LastLink.Payments.Anticipation.Infrastructure.Context;
-using LastLink.Payments.Anticipation.Infrastructure.Repositories;
+﻿using LastLink.Payment.Anticipation.Application.Interfaces;
+using LastLink.Payment.Anticipation.Application.Services;
+using LastLink.Payment.Anticipation.Domain.Repositories;
+using LastLink.Payment.Anticipation.Infrastructure.Context;
+using LastLink.Payment.Anticipation.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace LastLink.Payments.Anticipation.Infrastructure
+namespace LastLink.Payment.Anticipation.Infrastructure
 {
     /// <summary>
     /// Provides extension methods to configure and register infrastructure-level
@@ -31,6 +33,7 @@ namespace LastLink.Payments.Anticipation.Infrastructure
 
             // Repository implementations
             services.AddScoped<IAnticipationRequestRepository, AnticipationRequestRepository>();
+            services.AddScoped<IAnticipationService, AnticipationService>();
 
             return services;
         }

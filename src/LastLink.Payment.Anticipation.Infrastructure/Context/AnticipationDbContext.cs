@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-namespace LastLink.Payments.Anticipation.Infrastructure.Context
+namespace LastLink.Payment.Anticipation.Infrastructure.Context
 {
     /// <summary>
     /// Represents the EF Core database context for the anticipation module.

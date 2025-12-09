@@ -1,11 +1,11 @@
 ﻿using LastLink.Payment.Anticipation.Domain.Entities;
 using LastLink.Payment.Anticipation.Domain.Repositories;
 using LastLink.Payment.Anticipation.Domain.Enums;
-using LastLink.Payments.Anticipation.Infrastructure.Context;
+using LastLink.Payment.Anticipation.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace LastLink.Payments.Anticipation.Infrastructure.Repositories
+namespace LastLink.Payment.Anticipation.Infrastructure.Repositories
 {
     /// <summary>
     /// Implements persistence operations for AnticipationRequest using EF Core.

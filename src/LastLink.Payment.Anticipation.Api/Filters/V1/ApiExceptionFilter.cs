@@ -1,9 +1,9 @@
 ﻿using LastLink.Payment.Anticipation.Domain.Exceptions;
-using LastLink.Payments.Anticipation.Api.Models;
+using LastLink.Payment.Anticipation.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace LastLink.Payments.Anticipation.Api.Filters
+namespace LastLink.Payment.Anticipation.Api.Filters
 {
     /// <summary>
     /// Global exception filter responsible for translating thrown exceptions
