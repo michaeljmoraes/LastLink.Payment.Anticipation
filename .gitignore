@@ -1,0 +1,91 @@
+﻿#############################
+# .NET / C# Standard Ignores
+#############################
+bin/
+obj/
+out/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+TestResults/
+*.pidb
+*.svclog
+*.tmp
+
+###################################
+# NuGet & Package Restore Artifacts
+###################################
+.nuget/
+packages/
+*.nupkg
+*.nuspec
+project.assets.json
+project.nuget.cache
+*.nuget.props
+*.nuget.targets
+
+#############################
+# Visual Studio Working Files
+#############################
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+################################
+# ASP.NET / Config Files
+################################
+appsettings.*.json
+!appsettings.Development.json     # opcional: manter development versionado
+
+#####################################
+# Ignore generated DB / Temp Artifacts
+#####################################
+*.db
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
+
+#########################
+# Test / Coverage Reports
+#########################
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+*.opencover.xml
+
+#########################
+# OS generated files
+#########################
+Thumbs.db
+.DS_Store
+
+
+###############################
+# Docker / Containers / Compose
+###############################
+# Docker build artifacts
+**/docker-data/
+**/docker-cache/
+**/docker-volumes/
+**/docker-storage/
+**/docker-tmp/
+
+# Docker Compose override files
+docker-compose.override.yml
+
+# Container logs
+*.log
+logs/
+**/logs/
+
+# Ignore generated Docker images metadata
+*.tar
+
+# Local service configs
+.env
+.env.*
