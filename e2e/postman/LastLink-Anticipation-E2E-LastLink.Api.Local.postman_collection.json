@@ -1,0 +1,542 @@
+{
+	"info": {
+		"_postman_id": "99447a26-95fd-4d8c-b2df-5551ce43d2f5",
+		"name": "LastLink Payment - Anticipation E2E Suite",
+		"description": "End-to-end test suite for the LastLink Payment Anticipation API, updated according to latest controller and DTO changes.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4030559"
+	},
+	"item": [
+		{
+			"name": "1 - Full Anticipation Workflow (Create → List → Approve)",
+			"item": [
+				{
+					"name": "0.0 - Cleanup state before Scenario 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Cleanup must return 200\", () => pm.response.to.have.status(200));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/anticipations/cleanup?creatorId={{creator_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"anticipations",
+								"cleanup"
+							],
+							"query": [
+								{
+									"key": "creatorId",
+									"value": "{{creator_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.1 - Create a valid anticipation request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status must be 200\", () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test(\"Envelope must indicate success\", () => pm.expect(json.success).to.eql(true));",
+									"pm.test(\"Anticipation ID must be present\", () => pm.expect(json.data.id).to.exist);",
+									"pm.environment.set(\"anticipation_id\", json.data.id);",
+									"pm.test(\"Initial status must be Pending (0)\", () => pm.expect(json.data.status).to.eql(0));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"creatorId\": \"{{creator_id}}\",\n  \"grossAmount\": 150,\n  \"createdAt\": \"2025-12-06T22:00:00Z\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/anticipations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"anticipations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.2 - List anticipations for creator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status must be 200\", () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test(\"Envelope must indicate success\", () => pm.expect(json.success).to.eql(true));",
+									"pm.test(\"At least one anticipation must be returned\", () => pm.expect(json.data.length).to.be.greaterThan(0));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/anticipations?creatorId={{creator_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"anticipations"
+							],
+							"query": [
+								{
+									"key": "creatorId",
+									"value": "{{creator_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "1.3 - Approve anticipation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status must be 200\", () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test(\"Envelope must indicate success\", () => pm.expect(json.success).to.eql(true));",
+									"pm.test(\"Status must be Approved (1)\", () => pm.expect(json.data.status).to.eql(1));",
+									"pm.test(\"decisionAt must be present\", () => pm.expect(json.data.decisionAt).to.exist);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"status\": 1 }"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/anticipations/{{anticipation_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"anticipations",
+								"{{anticipation_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2 - Prevent multiple pending requests",
+			"item": [
+				{
+					"name": "0.0 Cleanup Scenario 2",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/anticipations/cleanup?creatorId={{creator_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"anticipations",
+								"cleanup"
+							],
+							"query": [
+								{
+									"key": "creatorId",
+									"value": "{{creator_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.1 Create first pending anticipation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();",
+									"pm.environment.set(\"anticipation_id\", json.data.id);",
+									"pm.test(\"Status must be Pending (0)\", () => pm.expect(json.data.status).to.eql(0));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"creatorId\": \"{{creator_id}}\", \"grossAmount\": 150, \"createdAt\": \"2025-12-06T22:00:00Z\" }"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/anticipations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"anticipations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "2.2 Attempt second pending (should fail)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status must be 400\", () => pm.response.to.have.status(400));",
+									"const json = pm.response.json();",
+									"pm.test(\"success must be false\", () => pm.expect(json.success).to.eql(false));",
+									"pm.test(\"Error message must mention pending\", () => pm.expect((json.message || \"\").toLowerCase()).to.include(\"pending\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"creatorId\": \"{{creator_id}}\", \"grossAmount\": 200, \"createdAt\": \"2025-12-06T22:10:00Z\" }"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/anticipations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"anticipations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3 - Minimum amount rule",
+			"item": [
+				{
+					"name": "3.1 Amount below minimum",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status must be 400\", () => pm.response.to.have.status(400));",
+									"const json = pm.response.json();",
+									"pm.test(\"success must be false\", () => pm.expect(json.success).to.eql(false));",
+									"pm.test(\"Error must mention minimum\", () => pm.expect(json.message).to.include(\"100\"));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"creatorId\": \"{{creator_id}}\", \"grossAmount\": 50, \"createdAt\": \"2025-12-06T22:00:00Z\" }"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/anticipations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"anticipations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4 - Reject anticipation",
+			"item": [
+				{
+					"name": "0.0 Cleanup Scenario 4",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/anticipations/cleanup?creatorId={{creator_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"anticipations",
+								"cleanup"
+							],
+							"query": [
+								{
+									"key": "creatorId",
+									"value": "{{creator_id}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.1 Create pending anticipation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();",
+									"pm.environment.set(\"anticipation_id\", json.data.id);",
+									"pm.test(\"Initial status must be Pending (0)\", () => pm.expect(json.data.status).to.eql(0));"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"creatorId\": \"{{creator_id}}\", \"grossAmount\": 180, \"createdAt\": \"2025-12-06T22:00:00Z\" }"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/anticipations",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"anticipations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4.2 Reject request",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status must be 200\", () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test(\"Status must be Rejected (2)\", () => pm.expect(json.data.status).to.eql(2));",
+									"pm.test(\"decisionAt must be present\", () => pm.expect(json.data.decisionAt).to.exist);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"status\": 2 }"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/v1/anticipations/{{anticipation_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"anticipations",
+								"{{anticipation_id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5 - Simulation endpoint",
+			"item": [
+				{
+					"name": "5.1 Simulate grossAmount=350",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status must be 200\", () => pm.response.to.have.status(200));",
+									"const json = pm.response.json();",
+									"pm.test(\"success must be true\", () => pm.expect(json.success).to.eql(true));",
+									"pm.test(\"Simulation must include fee\", () => pm.expect(json.data.feeRate).to.exist);",
+									"pm.test(\"Simulation must include netAmount\", () => pm.expect(json.data.netAmount).to.exist);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/v1/anticipations/simulate?grossAmount=350",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"anticipations",
+								"simulate"
+							],
+							"query": [
+								{
+									"key": "grossAmount",
+									"value": "350"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080"
+		},
+		{
+			"key": "creator_id",
+			"value": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+		},
+		{
+			"key": "anticipation_id",
+			"value": ""
+		}
+	]
+}
