@@ -38,7 +38,7 @@ A concise, decision-ready overview.
 ## **Clone the repository**
 
 ```bash
-git clone https://github.com/michaeljmoraes/LastLink.Payment.Anticipation.git
+git clone --branch v1.0.0.0 --single-branch https://github.com/michaeljmoraes/LastLink.Payment.Anticipation.git
 cd LastLink.Payment.Anticipation
 ```
 
