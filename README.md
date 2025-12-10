@@ -113,6 +113,13 @@ Full architecture, diagrams, domain rules, API documentation, ADRs, testing stra
 
 ➡️ **[docs/DETAILS.md](docs/DETAILS.md)**
 
+---
+
+# 📘 4. ROADMAP Documentation
+
+For the full, versioned roadmap, see:  
+➡️ **[docs/DETAILS.md](docs/ROADMAP.md)**
+
 
 ---
 
