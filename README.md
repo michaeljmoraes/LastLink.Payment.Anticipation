@@ -50,16 +50,6 @@ These videos give evaluators a complete, fast overview of execution, tests, and 
 
 ---
 
-# ⚙️ **1. Quick Start — Backend & Frontend**
-
-## **Clone the repository**
-
-```bash
-git clone --branch v1.0.0.0 --single-branch https://github.com/michaeljmoraes/LastLink.Payment.Anticipation.git
-cd LastLink.Payment.Anticipation
-```
-
-
 # ⚙️ **1. Quick Start (Backend + Frontend)**
 
 ## **Clone the repository**
