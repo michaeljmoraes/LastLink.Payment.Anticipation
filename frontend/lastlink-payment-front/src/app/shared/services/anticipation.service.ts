@@ -1,6 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { environment } from '../../../environments/environment';
+
 import {
   AnticipationDto,
   CreateAnticipationRequest,
@@ -15,33 +17,32 @@ import {
 export class AnticipationService {
   private http = inject(HttpClient);
 
-  // Ajuste se sua API estiver em outra porta
-  private readonly baseUrl = 'http://localhost:5274/api/v1/anticipations';
+  // Base API URL provided by the selected Angular environment (local or docker)
+  private readonly baseUrl = environment.apiUrl;
 
-  // 📌 LISTAR POR CRIADOR
-    listByCreator(creatorId: string): Observable<AnticipationDto[]> {
+  // Retrieve all anticipations for a given creator
+  listByCreator(creatorId: string): Observable<AnticipationDto[]> {
     return this.http.get<any>(`${this.baseUrl}?creatorId=${creatorId}`).pipe(
-        map(res => res.data as AnticipationDto[])
+      map(res => res.data as AnticipationDto[])
     );
-    }
+  }
 
-
-  // 📌 CRIAR SOLICITAÇÃO
+  // Create a new anticipation request
   create(request: CreateAnticipationRequest): Observable<CreateAnticipationResponse> {
     return this.http.post<CreateAnticipationResponse>(this.baseUrl, request);
   }
 
-  // 📌 APROVAR SOLICITAÇÃO
+  // Approve an anticipation request
   approve(id: string): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/${id}/approve`, {});
   }
 
-  // 📌 REJEITAR SOLICITAÇÃO
+  // Reject an anticipation request
   reject(id: string): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/${id}/reject`, {});
   }
 
-  // 📌 SIMULAÇÃO (corrigida)
+  // Perform anticipation simulation based on gross amount and creator
   simulate(request: SimulationRequest): Observable<SimulationResponse> {
     const params = `creatorId=${request.creatorId}&grossAmount=${request.grossAmount}`;
 
@@ -52,7 +53,7 @@ export class AnticipationService {
         return {
           grossAmount: d.grossAmount,
           netAmount: d.netAmount,
-          feeAmount: d.grossAmount - d.netAmount // fee calculada no front
+          feeAmount: d.grossAmount - d.netAmount
         } as SimulationResponse;
       })
     );
