@@ -33,6 +33,33 @@ A concise, decision-ready overview.
 
 ---
 
+# 🎥 **Demo Videos (V1 Evidence)**
+
+All video evidence is located under:
+
+
+These videos give evaluators a complete, fast overview of execution, tests, and architecture quality.
+
+---
+
+[🎬 Initial Setup, API Execution & First Run](docs/evidences/01-initial-setup-and-first-run.mp4)
+
+[🎬 E2E Postman Test Execution — Full Scenario Validation](docs/evidences/02-e2e-postman-test-execution.mp4)
+
+[🎬 .NET Unit Tests (NUnit + FluentAssertions)](docs/evidences/03-dotnet-unit-tests-nunit.mp4)
+
+---
+
+# ⚙️ **1. Quick Start — Backend & Frontend**
+
+## **Clone the repository**
+
+```bash
+git clone https://github.com/michaeljmoraes/LastLink.Payment.Anticipation.git
+cd LastLink.Payment.Anticipation
+```
+
+
 # ⚙️ **1. Quick Start (Backend + Frontend)**
 
 ## **Clone the repository**
