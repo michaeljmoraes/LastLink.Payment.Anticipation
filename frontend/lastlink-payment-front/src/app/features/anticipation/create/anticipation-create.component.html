@@ -1,0 +1,58 @@
+<section class="create-page">
+
+  <h1 class="page-title">Request Advance</h1>
+
+  <form [formGroup]="form" class="form-area">
+
+    <label class="label">Gross Amount</label>
+
+    <input type="number"
+           class="input"
+           placeholder="Enter an amount"
+           formControlName="grossAmount" />
+
+    <button class="btn btn-primary" (click)="simulate()" [disabled]="isSimulating">
+      {{ isSimulating ? 'Simulating...' : 'Simulate' }}
+    </button>
+
+    <div *ngIf="showError('grossAmount')" class="error-msg">
+      Minimum value allowed is 100.
+    </div>
+  </form>
+
+  <!-- Simulation -->
+  <div *ngIf="simulation" class="card">
+
+    <h3 class="card-title">Simulation Result</h3>
+
+    <div class="row">
+      <span>Gross:</span>
+      <span>{{ simulation.grossAmount | currency:'BRL':'symbol':'1.2-2' }}</span>
+    </div>
+
+    <div class="row fee">
+      <span>Fee:</span>
+      <span>-{{ simulation.feeAmount | currency:'BRL':'symbol':'1.2-2' }}</span>
+    </div>
+
+    <div class="row total">
+      <span>Net Amount:</span>
+      <span class="value-net">
+        {{ simulation.netAmount | currency:'BRL':'symbol':'1.2-2' }}
+      </span>
+    </div>
+
+    <button class="btn btn-success" (click)="create()" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Creating...' : 'Create Advance Request' }}
+    </button>
+
+  </div>
+
+  <div *ngIf="errorMessage" class="alert error-alert">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="successMessage" class="alert success-alert">
+    {{ successMessage }}
+  </div>
+</section>

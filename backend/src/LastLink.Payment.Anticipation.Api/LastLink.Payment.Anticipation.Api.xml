@@ -76,6 +76,68 @@
              Returns the updated anticipation record in a standard API response envelope.
              </remarks>
         </member>
+        <member name="M:LastLink.Payment.Anticipation.Api.Controllers.V1.AnticipationController.Approve(System.Guid)">
+            <summary>
+            Approves a pending anticipation request.
+            </summary>
+            <remarks>
+            This action executes a domain-level state transition:
+            
+            **PENDING → APPROVED**
+            
+            Business rules enforced:
+            - Only requests in *Pending* status may be approved.
+            - Approval automatically records a decision timestamp.
+            - Idempotency: approving an already-approved request is *not* allowed.
+            
+            **Example Request**
+            POST /api/v1/anticipations/{id}/approve
+            
+            **Example Successful Response**
+            ```json
+            {
+              "success": true,
+              "data": {
+                "id": "uuid",
+                "status": 1,
+                "decisionAt": "2025-12-09T14:55:00Z"
+              },
+              "error": null
+            }
+            ```
+            </remarks>
+        </member>
+        <member name="M:LastLink.Payment.Anticipation.Api.Controllers.V1.AnticipationController.Reject(System.Guid)">
+            <summary>
+            Rejects a pending anticipation request.
+            </summary>
+            <remarks>
+            This action executes a domain-level state transition:
+            
+            **PENDING → REJECTED**
+            
+            Business rules enforced:
+            - Only requests that are *Pending* may be rejected.
+            - A decision timestamp is automatically generated.
+            - A rejected request cannot transition to another state.
+            
+            **Example Request**
+            POST /api/v1/anticipations/{id}/reject
+            
+            **Example Successful Response**
+            ```json
+            {
+              "success": true,
+              "data": {
+                "id": "uuid",
+                "status": 2,
+                "decisionAt": "2025-12-09T15:22:10Z"
+              },
+              "error": null
+            }
+            ```
+            </remarks>
+        </member>
         <member name="M:LastLink.Payment.Anticipation.Api.Controllers.V1.AnticipationController.Simulate(System.Decimal)">
              <summary>
              Simulates the anticipation fee and net value calculation.

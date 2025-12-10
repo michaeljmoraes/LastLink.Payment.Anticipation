@@ -1,0 +1,120 @@
+<section class="ll-page">
+  <header class="ll-page-header">
+    <div>
+      <h1>My Anticipations</h1>
+      <p>Track your advances and understand how much is already available for withdrawal.</p>
+    </div>
+
+    <div class="ll-header-actions">
+      <button class="btn-primary" routerLink="/anticipations/new">
+        Request new advance
+      </button>
+    </div>
+  </header>
+
+  <div class="ll-grid">
+    <div class="ll-card hero">
+      <div class="hero-top">
+        <span class="label">Available for advance</span>
+        <span class="chip">Creator balance</span>
+      </div>
+
+      <div class="hero-value">
+        {{ totalApproved | currency:'BRL':'symbol':'1.2-2' }}
+      </div>
+
+      <p class="hero-sub">
+        This is an illustrative balance. In a real scenario, it would come from the creator’s wallet.
+      </p>
+    </div>
+
+    <div class="ll-card stats">
+      <div class="stat-item">
+        <span class="label">Total requested</span>
+        <span class="value">
+          {{ totalRequested | currency:'BRL':'symbol':'1.2-2' }}
+        </span>
+      </div>
+
+      <div class="stat-item">
+        <span class="label">Approved</span>
+        <span class="value-approved">
+          {{ totalApproved | currency:'BRL':'symbol':'1.2-2' }}
+        </span>
+      </div>
+
+      <div class="stat-item">
+        <span class="label">Pending</span>
+        <span class="value-pending">
+          {{ totalPending | currency:'BRL':'symbol':'1.2-2' }}
+        </span>
+      </div>
+      <div class="stat-item">
+        <span class="label">Rejected</span>
+        <span class="value-rejected">
+          {{ totalRejected | currency:'BRL':'symbol':'1.2-2' }}
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="ll-table-card ll-card">
+    <div class="table-header">
+      <h2>Advance history</h2>
+    </div>
+
+    <div *ngIf="isLoading" class="loading">
+      Loading your anticipations...
+    </div>
+
+    <div *ngIf="errorMessage" class="error">
+      {{ errorMessage }}
+    </div>
+
+    <table *ngIf="!isLoading && !errorMessage && anticipations.length"
+           class="ll-table">
+      <thead>
+        <tr>
+          <th>Created at</th>
+          <th>Gross amount</th>
+          <th>Net amount</th>
+          <th>Fee</th>
+          <th>Status / Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let a of anticipations">
+          <td>{{ a.createdAt | date:'short' }}</td>
+          <td>{{ a.grossAmount | currency:'BRL':'symbol':'1.2-2' }}</td>
+          <td>{{ a.netAmount | currency:'BRL':'symbol':'1.2-2' }}</td>
+          <td>{{ a.feeRate | percent:'1.1-2' }}</td>
+
+          <td>
+            <!-- Status Badge -->
+            <span [class]="getStatusClass(a.status)">
+              {{ getStatusLabel(a.status) }}
+            </span>
+
+            <!-- Action Buttons (only for Pending) -->
+            <div *ngIf="a.status === AnticipationStatus.Pending"
+                 class="action-buttons">
+              <button class="btn-approve" (click)="approve(a.id)">Approve</button>
+              <button class="btn-reject" (click)="reject(a.id)">Reject</button>
+            </div>
+          </td>
+
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="!isLoading && !errorMessage && !anticipations.length"
+         class="empty">
+      <p>You don’t have any anticipations yet.</p>
+      <button class="btn-secondary" routerLink="/anticipations/new">
+        Request your first advance
+      </button>
+    </div>
+  </div>
+</section>

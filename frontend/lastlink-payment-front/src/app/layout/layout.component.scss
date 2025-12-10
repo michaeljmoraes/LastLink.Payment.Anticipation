@@ -1,0 +1,13 @@
+.ll-layout {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at top left, #1f2937 0, #020617 55%);
+  color: #f9fafb;
+}
+
+.ll-content {
+  flex: 1;
+  padding: 2rem 2.5rem;
+  overflow-y: auto;
+}

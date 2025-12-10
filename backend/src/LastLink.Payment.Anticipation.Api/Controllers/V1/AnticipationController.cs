@@ -111,6 +111,84 @@ namespace LastLink.Payment.Anticipation.Api.Controllers.V1
         }
 
         /// <summary>
+        /// Approves a pending anticipation request.
+        /// </summary>
+        /// <remarks>
+        /// This action executes a domain-level state transition:
+        /// 
+        /// **PENDING → APPROVED**
+        /// 
+        /// Business rules enforced:
+        /// - Only requests in *Pending* status may be approved.
+        /// - Approval automatically records a decision timestamp.
+        /// - Idempotency: approving an already-approved request is *not* allowed.
+        /// 
+        /// **Example Request**
+        /// POST /api/v1/anticipations/{id}/approve
+        /// 
+        /// **Example Successful Response**
+        /// ```json
+        /// {
+        ///   "success": true,
+        ///   "data": {
+        ///     "id": "uuid",
+        ///     "status": 1,
+        ///     "decisionAt": "2025-12-09T14:55:00Z"
+        ///   },
+        ///   "error": null
+        /// }
+        /// ```
+        /// </remarks>
+        [HttpPost("{id}/approve")]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Approve(Guid id)
+        {
+            var result = await _service.UpdateStatusAsync(id, approve: true);
+            return Ok(ApiResponse<object>.Ok(result));
+        }
+
+
+        /// <summary>
+        /// Rejects a pending anticipation request.
+        /// </summary>
+        /// <remarks>
+        /// This action executes a domain-level state transition:
+        /// 
+        /// **PENDING → REJECTED**
+        /// 
+        /// Business rules enforced:
+        /// - Only requests that are *Pending* may be rejected.
+        /// - A decision timestamp is automatically generated.
+        /// - A rejected request cannot transition to another state.
+        /// 
+        /// **Example Request**
+        /// POST /api/v1/anticipations/{id}/reject
+        /// 
+        /// **Example Successful Response**
+        /// ```json
+        /// {
+        ///   "success": true,
+        ///   "data": {
+        ///     "id": "uuid",
+        ///     "status": 2,
+        ///     "decisionAt": "2025-12-09T15:22:10Z"
+        ///   },
+        ///   "error": null
+        /// }
+        /// ```
+        /// </remarks>
+        [HttpPost("{id}/reject")]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Reject(Guid id)
+        {
+            var result = await _service.UpdateStatusAsync(id, approve: false);
+            return Ok(ApiResponse<object>.Ok(result));
+        }
+
+
+        /// <summary>
         /// Simulates the anticipation fee and net value calculation.
         /// </summary>
         /// <remarks>

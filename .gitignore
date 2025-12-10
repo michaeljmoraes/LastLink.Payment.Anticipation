@@ -89,3 +89,34 @@ logs/
 # Local service configs
 .env
 .env.*
+
+#################################################
+# Angular / Frontend Standard Ignores
+#################################################
+
+# Angular build outputs
+dist/
+build/
+.angular/
+.angular/cache/
+
+# Node dependencies
+node_modules/
+
+# System & editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Env files (se existir algum)
+*.env
+*.env.*
+.env.local
+
+# Angular CLI / temp
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+pnpm-debug.log
+package-lock.json.5*
