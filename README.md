@@ -107,11 +107,12 @@ LastLink.Payment.Anticipation
 
 ---
 
-# 📘 **3. Detailed Documentation**
+# 📘 3. Detailed Documentation
 
 Full architecture, diagrams, domain rules, API documentation, ADRs, testing strategy and roadmap:
 
-➡️ **`docs/DETAILS.md`**
+➡️ **[docs/DETAILS.md](docs/DETAILS.md)**
+
 
 ---
 
