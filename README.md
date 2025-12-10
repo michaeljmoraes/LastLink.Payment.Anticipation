@@ -35,15 +35,21 @@ A concise, decision-ready overview.
 
 # ⚙️ **1. Quick Start (Backend + Frontend)**
 
+## **Clone the repository**
+
+```bash
+git clone https://github.com/michaeljmoraes/LastLink.Payment.Anticipation.git
+cd LastLink.Payment.Anticipation
+```
+
+---
+
 ## **Backend — start in < 30 seconds**
 
 ```bash
-cd LastLink.Payment.Anticipation
-dotnet restore
+dotnet restore .\backend\src
 
-dotnet ef database update \
-  --project backend/src/LastLink.Payment.Anticipation.Infrastructure \
-  --startup-project backend/src/LastLink.Payment.Anticipation.Api
+dotnet ef database update --project backend/src/LastLink.Payment.Anticipation.Infrastructure --startup-project backend/src/LastLink.Payment.Anticipation.Api
 
 cd backend/src/LastLink.Payment.Anticipation.Api
 dotnet run --launch-profile "LastLink.Api.Local(HTTP)"
@@ -60,7 +66,7 @@ Swagger
 ## **Frontend — start in < 20 seconds**
 
 ```bash
-cd LastLink.Payment.Anticipation/frontend/lastlink-payment-front
+cd frontend/lastlink-payment-front
 npm install
 ng serve --open
 ```
