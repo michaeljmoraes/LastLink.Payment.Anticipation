@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router'; // Required for routerLink
 import { AnticipationService } from '../../../shared/services/anticipation.service';
 import { AnticipationDto, AnticipationStatus } from '../../../shared/models/anticipation.model';
+import { ToastService } from '../../../shared/components/toast/toast.service';
 
 @Component({
   selector: 'app-anticipation-list',
@@ -20,6 +21,8 @@ export class AnticipationListComponent implements OnInit {
      Dependencies
      ================================================== */
   private service = inject(AnticipationService);
+  private toast = inject(ToastService);
+
 
   /* ==================================================
      Component State
@@ -127,21 +130,27 @@ export class AnticipationListComponent implements OnInit {
      ================================================== */
   approve(id: string): void {
     this.service.approve(id).subscribe({
-      next: () => this.load(),
+      next: () => {
+        this.toast.show('Advance request approved successfully.', 'success');
+        this.load();
+      },
       error: err => {
-        console.error('Approval error:', err);
-        alert(err?.error?.error ?? 'Unable to approve the request.');
+        this.toast.show(err?.error?.error ?? 'Unable to approve the request.', 'error');
       }
     });
   }
 
+
   reject(id: string): void {
     this.service.reject(id).subscribe({
-      next: () => this.load(),
+      next: () => {
+        this.toast.show('Request rejected.', 'success');
+        this.load();
+      },
       error: err => {
-        console.error('Rejection error:', err);
-        alert(err?.error?.error ?? 'Unable to reject the request.');
+        this.toast.show(err?.error?.error ?? 'Unable to reject the request.', 'error');
       }
     });
   }
+
 }

@@ -11,16 +11,20 @@
            placeholder="Enter an amount"
            formControlName="grossAmount" />
 
-    <button class="btn btn-primary" (click)="simulate()" [disabled]="isSimulating">
+    <button class="btn btn-primary"
+            type="button"
+            (click)="simulate()"
+            [disabled]="isSimulating">
       {{ isSimulating ? 'Simulating...' : 'Simulate' }}
     </button>
 
     <div *ngIf="showError('grossAmount')" class="error-msg">
       Minimum value allowed is 100.
     </div>
+
   </form>
 
-  <!-- Simulation -->
+  <!-- Simulation Card -->
   <div *ngIf="simulation" class="card">
 
     <h3 class="card-title">Simulation Result</h3>
@@ -42,17 +46,13 @@
       </span>
     </div>
 
-    <button class="btn btn-success" (click)="create()" [disabled]="isSubmitting">
+    <button class="btn btn-success"
+            type="button"
+            (click)="create()"
+            [disabled]="isSubmitting">
       {{ isSubmitting ? 'Creating...' : 'Create Advance Request' }}
     </button>
 
   </div>
 
-  <div *ngIf="errorMessage" class="alert error-alert">
-    {{ errorMessage }}
-  </div>
-
-  <div *ngIf="successMessage" class="alert success-alert">
-    {{ successMessage }}
-  </div>
 </section>

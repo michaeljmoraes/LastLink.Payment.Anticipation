@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AnticipationService } from '../../../shared/services/anticipation.service';
 import { SimulationResponse } from '../../../shared/models/anticipation.model';
+import { ToastService } from '../../../shared/components/toast/toast.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-anticipation-create',
@@ -13,95 +15,117 @@ import { SimulationResponse } from '../../../shared/models/anticipation.model';
 })
 export class AnticipationCreateComponent {
 
+  /* ============================
+     Dependencies
+     ============================ */
   private fb = inject(FormBuilder);
   private service = inject(AnticipationService);
+  private toast = inject(ToastService);
+  private router = inject(Router);
 
+  /* ============================
+     Form definition
+     ============================ */
   form: FormGroup = this.fb.group({
     grossAmount: [null, [Validators.required, Validators.min(100)]]
   });
 
   readonly creatorId = '3fa85f64-5717-4562-b3fc-2c963f66afa6';
 
+  /* ============================
+     Component state
+     ============================ */
   isSimulating = false;
   isSubmitting = false;
 
   simulation?: SimulationResponse;
-  errorMessage = '';
-  successMessage = '';
 
-  // 🔎 Validação de campos
+  /* ============================
+     Field validation helper
+     ============================ */
   showError(fieldName: string): boolean {
     const control = this.form.get(fieldName);
     return !!control && control.invalid && (control.dirty || control.touched);
   }
 
-  // 🔥 SIMULAR
+  /* ============================
+     Simulation action
+     ============================ */
   simulate(): void {
-
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.toast.show('Please enter a valid amount.', 'error');
       return;
     }
 
     this.isSimulating = true;
-    this.errorMessage = '';
-    this.successMessage = '';
     this.simulation = undefined;
 
     const gross = this.form.value.grossAmount;
 
-    this.service
-      .simulate({ creatorId: this.creatorId, grossAmount: gross })
+    this.service.simulate({ creatorId: this.creatorId, grossAmount: gross })
       .subscribe({
         next: sim => {
           this.simulation = sim;
           this.isSimulating = false;
+          this.toast.show('Simulation updated.', 'success');
         },
         error: err => {
-          this.errorMessage =
-            err?.error?.error ??
-            'Simulation failed. Check the amount and try again.';
+          this.toast.show(
+            err?.error?.error ?? 'Simulation failed. Check the amount.',
+            'error'
+          );
           this.isSimulating = false;
         }
       });
   }
 
-  // 🚀 CRIAR SOLICITAÇÃO
+  /* ============================
+     Create anticipation action
+     ============================ */
   create(): void {
-
     if (!this.simulation) {
-      this.errorMessage = 'Please run a simulation first.';
+      this.toast.show('Please run a simulation first.', 'error');
       return;
     }
 
     this.isSubmitting = true;
-    this.errorMessage = '';
-    this.successMessage = '';
 
     const gross = this.form.value.grossAmount;
 
-    this.service
-      .create({ creatorId: this.creatorId, grossAmount: gross })
+    this.service.create({ creatorId: this.creatorId, grossAmount: gross })
       .subscribe({
         next: resp => {
           if (resp.success) {
-            this.successMessage =
-              'Your advance request was created successfully and is now under review.';
+            this.toast.show(
+              'Your advance request was created successfully.',
+              'success'
+            );
+
+            // Reset form and simulation
             this.form.reset();
             this.simulation = undefined;
+
+            // Navigate back to list in 700ms (smooth UX)
+            setTimeout(() => {
+              this.router.navigate(['/anticipations']);
+            }, 700);
+
           } else {
-            this.errorMessage =
-              resp.errors?.join(', ') ??
-              'Error creating request.';
+            this.toast.show(
+              resp.errors?.join(', ') ?? 'Error creating request.',
+              'error'
+            );
           }
 
           this.isSubmitting = false;
         },
 
         error: err => {
-          this.errorMessage =
-            err?.error?.error ??
-            'Unable to create the request.';
+          this.toast.show(
+            err?.error?.error ?? 'Unable to create the request.',
+            'error'
+          );
           this.isSubmitting = false;
         }
       });
